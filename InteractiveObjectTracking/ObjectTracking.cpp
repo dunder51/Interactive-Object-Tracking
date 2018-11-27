@@ -1,6 +1,6 @@
 //
 //  ObjectTracking.cpp
-//  InteractiveObjectTracking
+//  InteractiveObjectTracking-template matching
 //
 //  Created by Duncan Calder on 11/7/18.
 //  Copyright © 2018 Duncan Calder. All rights reserved.
