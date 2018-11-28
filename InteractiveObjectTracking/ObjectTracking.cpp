@@ -137,16 +137,6 @@ int main(int argc, char* argv[]) {
     resize(firstRead, src, Size(), .5, .5);
     setMouseCallback(windowName, onMouse);
     
-    //SiftFeatureDetector detector;
-    //Ptr<xfeatures2d::SIFT> detector = xfeatures2d::SIFT::create();
-    //Ptr<Feature2D> detector = xfeatures2d::SURF::create();
-    //Ptr<Feature2D> detector = ORB::create();
-    Ptr<Feature2D> detector = xfeatures2d::SIFT::create();
-    vector<KeyPoint> keypointsCropped;
-    BFMatcher matchmaker;
-    vector<DMatch> matches;
-    Mat descriptorsCropped;
-    
     if ( !cap.isOpened() ) {
         printf("Could not initialize video capture\n");
         return 0;
@@ -186,41 +176,34 @@ int main(int argc, char* argv[]) {
             ROI.copyTo(regionImage);
             resize(regionImage, resizeImageCrop, Size(), .5, .5);
             cvtColor(resizeImageCrop, grayImageCrop, COLOR_BGR2GRAY);
-            detector->detect(grayImageCrop, keypointsCropped);
-            detector->compute(regionImage, keypointsCropped, descriptorsCropped);
+            
+            
         }
         
         if (croppedCheck && !capture) {
             //cout << "descriptors match" << endl;
-            assert(descriptorsCropped.rows > 0 && descriptorsCropped.cols > 0 && "descriptors empty");
-            vector<KeyPoint> keypointsVideo;
-            detector->detect(grayImageVid, keypointsVideo);
-            Mat descriptorsVideo;
-            detector->compute(grayImageVid, keypointsVideo, descriptorsVideo);
-            matchmaker.match(descriptorsVideo, descriptorsCropped, matches);
             
+            Mat result;
+            matchTemplate( resizeImageVid, resizeImageCrop, result, TM_CCORR_NORMED);
+            normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
+            /// Localizing the best match with minMaxLoc
+            double minVal; double maxVal; Point minLoc; Point maxLoc;
+            Point matchLoc;
+            
+            minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
             // Add results to image and save.
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             
-            int threshold = 330;
-            
-            vector<DMatch> finalMatches;
-            for (int i = 0; i < matches.size(); i++) {
-                if (matches[i].distance < threshold) {
-                    finalMatches.push_back(matches[i]);
-                    cout << "Match Found" << endl;
-                }
-            }
-            if (finalMatches.size() == 0) cout << "No Match" << endl;
-            //http://docs.opencv.org/modules/features2d/doc/drawing_function_of_keypoints_and_matches.html?
-            //cout << "displayImage:" << displayImage.rows << endl;
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             //cout << "resizeVid: " << resizeImageVid.rows << endl;
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             assert(resizeImageCrop.rows > 0 && resizeImageCrop.cols > 0 && "resizeImageCrop empty");
-            drawMatches(resizeImageVid, keypointsVideo, resizeImageCrop, keypointsCropped, finalMatches, displayImage);
-            //imshow(windowName, displayImage);
+            matchLoc = minLoc;
+            rectangle( displayImage, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
+            rectangle( result, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
+
+            
         }
         showImage();
         //imshow(windowName,src);
