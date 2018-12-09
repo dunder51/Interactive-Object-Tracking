@@ -75,6 +75,35 @@ void keypointsCrop(Ptr<Feature2D> detector, Mat regionImage, vector<KeyPoint> ke
     detector->compute(resizeImage, keypoints, descriptors);
 }
 
+void targetLocation(Point location, Mat image){
+    int width = image.cols;
+    int height = image.rows;
+    
+    Point center = Point(floor(width/2), floor(height/2));
+    
+    //cout << width << " " << height << " " << center << endl;
+    
+    int diffX = center.x - location.x;
+    int diffY = center.y - location.y;
+    int percentWiggle = 10;
+    int wiggleX = floor(width / percentWiggle);
+    int wiggleY = floor(height / percentWiggle);
+    
+    if (diffX > 0 && diffX > wiggleX) {
+        cout << "Right: " << diffX << endl;
+    }
+    
+    if (diffX < 0 && abs(diffX) > wiggleX) {
+        cout << "Left: " << diffX << endl;
+    }
+    
+    
+    if (diffY < wiggleY && diffX < wiggleX && diffY < 0 && diffX < 0) {
+        //cout << "No Move" << endl;
+        //No move
+    }
+}
+
 void onMouse(int event, int x, int y, int f, void*){
     
     switch(event){
@@ -157,6 +186,7 @@ int main(int argc, char* argv[]) {
         resizeImageVid.copyTo(src);
         resizeImageVid.copyTo(displayImage);
         
+        Point matchLoc;
         
         char key = waitKey(33);
         if (key == 'q') {
@@ -203,10 +233,12 @@ int main(int argc, char* argv[]) {
             matchLoc = maxLoc;
             rectangle( displayImage, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
             //rectangle( result, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
-
+            //cout << matchLoc << endl;
+            targetLocation(matchLoc, displayImage);
             
         }
         showImage();
+        //targetLocation(matchLoc, resizeImageCrop);
         //imshow(windowName,src);
     }
 }
