@@ -195,13 +195,14 @@ int main(int argc, char* argv[]) {
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             
-            assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
+            //assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             //cout << "resizeVid: " << resizeImageVid.rows << endl;
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             assert(resizeImageCrop.rows > 0 && resizeImageCrop.cols > 0 && "resizeImageCrop empty");
-            matchLoc = minLoc;
+            
+            matchLoc = maxLoc;
             rectangle( displayImage, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
-            rectangle( result, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
+            //rectangle( result, matchLoc, Point( matchLoc.x + resizeImageCrop.cols , matchLoc.y + resizeImageCrop.rows ), Scalar::all(0), 2, 8, 0 );
 
             
         }
