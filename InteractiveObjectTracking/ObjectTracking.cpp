@@ -75,6 +75,35 @@ void keypointsCrop(Ptr<Feature2D> detector, Mat regionImage, vector<KeyPoint> ke
     detector->compute(resizeImage, keypoints, descriptors);
 }
 
+void targetLocation(Point location, Mat image){
+    int width = image.cols;
+    int height = image.rows;
+    
+    Point center = Point(floor(width/2), floor(height/2));
+    
+    //cout << width << " " << height << " " << center << endl;
+    
+    int diffX = center.x - location.x;
+    int diffY = center.y - location.y;
+    int percentWiggle = 10;
+    int wiggleX = floor(width / percentWiggle);
+    int wiggleY = floor(height / percentWiggle);
+    
+    if (diffX > 0 && diffX > wiggleX) {
+        cout << "Right: " << diffX << endl;
+    }
+    
+    if (diffX < 0 && abs(diffX) > wiggleX) {
+        cout << "Left: " << diffX << endl;
+    }
+    
+    
+    if (diffY < wiggleY && diffX < wiggleX && diffY < 0 && diffX < 0) {
+        //cout << "No Move" << endl;
+        //No move
+    }
+}
+
 void onMouse(int event, int x, int y, int f, void*){
     
     switch(event){
@@ -219,7 +248,7 @@ int main(int argc, char* argv[]) {
                 }
                 
             }
-            cout << close << endl;
+            //cout << close << endl;
             finalMatches.push_back(matches[ind]);
             //DMatch match = matches[ind];
             if (finalMatches.size() == 0) cout << "No Match" << endl;
@@ -233,7 +262,8 @@ int main(int argc, char* argv[]) {
             //imshow(windowName, displayImage);
             int matchIndex = matches[ind].queryIdx;
             KeyPoint keypointMatch = keypointsVideo[matchIndex];
-            cout << keypointMatch.pt << endl;
+            //cout << keypointMatch.pt << endl;
+            targetLocation(keypointMatch.pt, displayImage);
         }
         showImage();
         //imshow(windowName,src);
