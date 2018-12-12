@@ -27,6 +27,7 @@
 		AE6F6AF52193DFC000CB3E8E /* ObjectTracking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectTracking.cpp; sourceTree = "<group>"; };
 		AE6F6AF62193DFC000CB3E8E /* ObjectTracking.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ObjectTracking.hpp; sourceTree = "<group>"; };
 		AE742FDA21960FAD00924BB0 /* ObjectTrackingV1.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectTrackingV1.cpp; sourceTree = "<group>"; };
+		AEBAA0B321ADFE6400D2DB4E /* MatchTemplate_Demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MatchTemplate_Demo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +63,7 @@
 				AE6F6AF52193DFC000CB3E8E /* ObjectTracking.cpp */,
 				AE742FDA21960FAD00924BB0 /* ObjectTrackingV1.cpp */,
 				AE6F6AF62193DFC000CB3E8E /* ObjectTracking.hpp */,
+				AEBAA0B321ADFE6400D2DB4E /* MatchTemplate_Demo.cpp */,
 			);
 			path = InteractiveObjectTracking;
 			sourceTree = "<group>";
