@@ -203,15 +203,25 @@ int main(int argc, char* argv[]) {
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             
-            int threshold = 330;
+            int threshold = 350;
+            int close = 5000;
+            int ind = 0;
             
             vector<DMatch> finalMatches;
             for (int i = 0; i < matches.size(); i++) {
                 if (matches[i].distance < threshold) {
-                    finalMatches.push_back(matches[i]);
-                    cout << "Match Found" << endl;
+                    //finalMatches.push_back(matches[i]);
+                    //cout << "Match Found" << endl;
                 }
+                if (matches[i].distance < close) {
+                    close = matches[i].distance;
+                    ind = i;
+                }
+                
             }
+            cout << close << endl;
+            finalMatches.push_back(matches[ind]);
+            //DMatch match = matches[ind];
             if (finalMatches.size() == 0) cout << "No Match" << endl;
             //http://docs.opencv.org/modules/features2d/doc/drawing_function_of_keypoints_and_matches.html?
             //cout << "displayImage:" << displayImage.rows << endl;
@@ -221,6 +231,9 @@ int main(int argc, char* argv[]) {
             assert(resizeImageCrop.rows > 0 && resizeImageCrop.cols > 0 && "resizeImageCrop empty");
             drawMatches(resizeImageVid, keypointsVideo, resizeImageCrop, keypointsCropped, finalMatches, displayImage);
             //imshow(windowName, displayImage);
+            int matchIndex = matches[ind].queryIdx;
+            KeyPoint keypointMatch = keypointsVideo[matchIndex];
+            cout << keypointMatch.pt << endl;
         }
         showImage();
         //imshow(windowName,src);
