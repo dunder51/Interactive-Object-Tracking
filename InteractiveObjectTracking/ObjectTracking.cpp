@@ -56,11 +56,9 @@ void showImage() {
         newCrop = true;
     }
     if (croppedCheck && !capture){
-        //cout << "show displayImage" << endl;
         imshow(windowName, displayImage);
     }
     else {
-        //cout << "show regular image" << endl;
         imshow(windowName,img);
     }
 }
@@ -90,11 +88,11 @@ void targetLocation(Point location, Mat image){
     int wiggleY = floor(height / percentWiggle);
     
     if (diffX > 0 && diffX > wiggleX) {
-        cout << "Right: " << diffX << endl;
+        cout << "Left: " << diffX << endl;
     }
     
     if (diffX < 0 && abs(diffX) > wiggleX) {
-        cout << "Left: " << diffX << endl;
+        cout << "Right: " << diffX << endl;
     }
     
     
@@ -172,8 +170,6 @@ int main(int argc, char* argv[]) {
     //Ptr<Feature2D> detector = ORB::create();
     Ptr<Feature2D> detector = xfeatures2d::SIFT::create();
     vector<KeyPoint> keypointsCropped;
-    BFMatcher matchmaker;
-    vector<DMatch> matches;
     Mat descriptorsCropped;
     
     if ( !cap.isOpened() ) {
@@ -233,7 +229,7 @@ int main(int argc, char* argv[]) {
             vector<cv::DMatch> finalMatches;
             for (int i = 0; i < matches.size(); ++i)
             {
-                const float ratio = 0.7; // As in Lowe's paper; can be tuned
+                const float ratio = 0.7; // As in Lowe's paper, can be tuned
                 if (matches[i][0].distance < ratio * matches[i][1].distance)
                 {
                     finalMatches.push_back(matches[i][0]);
