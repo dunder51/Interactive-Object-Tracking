@@ -180,7 +180,6 @@ int main(int argc, char* argv[]) {
         printf("Could not initialize video capture\n");
         return 0;
     }
-    //I'm realizing that i need to keep these open because i want the cropped image to not change unless it is changed so i can't have it resetting between loops
     Mat resizeImageCrop;
     Mat grayImageCrop;
     Mat regionImage;
@@ -211,7 +210,6 @@ int main(int argc, char* argv[]) {
         
         
         if (newCrop && !capture) {
-            //cout << "keypointsCrop" << endl;
             ROI.copyTo(regionImage);
             resize(regionImage, resizeImageCrop, Size(), .5, .5);
             cvtColor(resizeImageCrop, grayImageCrop, COLOR_BGR2GRAY);
@@ -220,52 +218,52 @@ int main(int argc, char* argv[]) {
         }
         
         if (croppedCheck && !capture) {
-            //cout << "descriptors match" << endl;
             assert(descriptorsCropped.rows > 0 && descriptorsCropped.cols > 0 && "descriptors empty");
             vector<KeyPoint> keypointsVideo;
             detector->detect(grayImageVid, keypointsVideo);
             Mat descriptorsVideo;
             detector->compute(grayImageVid, keypointsVideo, descriptorsVideo);
-            matchmaker.match(descriptorsVideo, descriptorsCropped, matches);
-            
-            // Add results to image and save.
+            std::vector<std::vector<cv::DMatch>> matches;
+            cv::BFMatcher matcher;
+            // Find two nearest matches
+            matcher.knnMatch(descriptorsVideo, descriptorsCropped, matches, 2);
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             
-            int threshold = 350;
-            int close = 5000;
-            int ind = 0;
-            
-            vector<DMatch> finalMatches;
-            for (int i = 0; i < matches.size(); i++) {
-                if (matches[i].distance < threshold) {
-                    //finalMatches.push_back(matches[i]);
-                    //cout << "Match Found" << endl;
+            vector<cv::DMatch> finalMatches;
+            for (int i = 0; i < matches.size(); ++i)
+            {
+                const float ratio = 0.7; // As in Lowe's paper; can be tuned
+                if (matches[i][0].distance < ratio * matches[i][1].distance)
+                {
+                    finalMatches.push_back(matches[i][0]);
                 }
-                if (matches[i].distance < close) {
-                    close = matches[i].distance;
-                    ind = i;
-                }
-                
             }
-            //cout << close << endl;
-            finalMatches.push_back(matches[ind]);
-            //DMatch match = matches[ind];
-            if (finalMatches.size() == 0) cout << "No Match" << endl;
+            
             //http://docs.opencv.org/modules/features2d/doc/drawing_function_of_keypoints_and_matches.html?
-            //cout << "displayImage:" << displayImage.rows << endl;
             assert(displayImage.rows > 0 && displayImage.cols > 0 && "displayImage empty 1");
-            //cout << "resizeVid: " << resizeImageVid.rows << endl;
             assert(resizeImageVid.rows > 0 && resizeImageVid.cols > 0 && "resizeImageVid empty");
             assert(resizeImageCrop.rows > 0 && resizeImageCrop.cols > 0 && "resizeImageCrop empty");
+            // Add results to image and save.
             drawMatches(resizeImageVid, keypointsVideo, resizeImageCrop, keypointsCropped, finalMatches, displayImage);
-            //imshow(windowName, displayImage);
-            int matchIndex = matches[ind].queryIdx;
-            KeyPoint keypointMatch = keypointsVideo[matchIndex];
-            //cout << keypointMatch.pt << endl;
-            targetLocation(keypointMatch.pt, displayImage);
+            // Find average location of matches
+            int sumX = 0;
+            int sumY = 0;
+            for(int i = 0; i < finalMatches.size(); i++){
+                int matchIndex = finalMatches[i].queryIdx;
+                KeyPoint keypointMatch = keypointsVideo[matchIndex];
+                Point matchPoint = keypointMatch.pt;
+                sumX = sumX + matchPoint.x;
+                sumY = sumY + matchPoint.y;
+            }
+            Point avgPoint;
+            if (finalMatches.size() > 0){
+                int avgX = abs(floor(sumX/finalMatches.size()));
+                int avgY = abs(floor(sumY/finalMatches.size()));
+                avgPoint = Point(avgX, avgY);
+            }
+            targetLocation(avgPoint, displayImage);
         }
         showImage();
-        //imshow(windowName,src);
     }
 }
