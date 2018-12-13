@@ -23,6 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AE4919D321C1DAE6007D360E /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		AE6F6AEB2193DEC600CB3E8E /* InteractiveObjectTracking */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = InteractiveObjectTracking; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6F6AF52193DFC000CB3E8E /* ObjectTracking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectTracking.cpp; sourceTree = "<group>"; };
 		AE6F6AF62193DFC000CB3E8E /* ObjectTracking.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ObjectTracking.hpp; sourceTree = "<group>"; };
@@ -45,6 +46,7 @@
 			children = (
 				AE6F6AED2193DEC600CB3E8E /* InteractiveObjectTracking */,
 				AE6F6AEC2193DEC600CB3E8E /* Products */,
+				AE4919D321C1DAE6007D360E /* Data */,
 			);
 			sourceTree = "<group>";
 		};

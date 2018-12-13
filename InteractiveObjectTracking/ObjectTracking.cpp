@@ -90,11 +90,11 @@ void targetLocation(Point location, Mat image){
     int wiggleY = floor(height / percentWiggle);
     
     if (diffX > 0 && diffX > wiggleX) {
-        cout << "Right: " << diffX << endl;
+        cout << "Left: " << diffX << endl;
     }
     
     if (diffX < 0 && abs(diffX) > wiggleX) {
-        cout << "Left: " << diffX << endl;
+        cout << "Right: " << diffX << endl;
     }
     
     
